@@ -7,26 +7,44 @@ import jakarta.websocket.Session;
 import jakarta.websocket.server.ServerEndpoint;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.file.Files;
+import java.util.concurrent.Future;
 
 @ServerEndpoint(value = "/echo")
 public class EchoEndpoint {
     Session session;
     @OnOpen
-    public void onOpen(Session session) throws IOException {
+    public void onOpen(Session session) throws Exception {
         System.out.println("Threads count currently  : " + Thread.currentThread().getName());
-        File file = new File("test.txt");
+        File file = new File("T06xxyyy.zip");
+        final int CHUNK_SIZE = 10240;
         if(file.exists()){
-            try{
-                byte[] fileBytes = Files.readAllBytes(file.toPath());
-                ByteBuffer bytebuffer = ByteBuffer.wrap(fileBytes);
-                session.getBasicRemote().sendBinary(bytebuffer);
-                System.out.println("SENT!");
-            } catch (Exception e){
-                e.printStackTrace();
+            try (FileInputStream fileInputStream = new FileInputStream(file)) {
+                byte[] buffer = new byte[CHUNK_SIZE];
+                int bytesRead;
+
+                int idx = 1;
+                boolean isLastChunk;
+
+                while ((bytesRead = fileInputStream.read(buffer)) != -1) {
+                    isLastChunk = (fileInputStream.available() == 0);  // Check if this is the last chunk
+                    String strIdx = idx + "";
+                    System.out.println(strIdx + ". Sending: " + bytesRead + " bytes");
+                    ByteBuffer byteBuffer = ByteBuffer.wrap(buffer, 0, bytesRead);
+
+//                    Future<Void> future = session.getAsyncRemote().sendBinary(byteBuffer, isLastChunk);
+                    session.getBasicRemote().sendBinary(byteBuffer,isLastChunk);
+//                    future.get();
+                    idx++;
+                }
             }
+            System.out.println("File transfer finished!");
+            String fileName = file.getName();
+            session.getBasicRemote().sendText(fileName);
+//            session.close();
         }
         else{
             System.out.println("tak ada");
