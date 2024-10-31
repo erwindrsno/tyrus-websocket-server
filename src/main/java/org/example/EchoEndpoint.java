@@ -31,8 +31,8 @@ public class EchoEndpoint {
 
                 while ((bytesRead = fileInputStream.read(buffer)) != -1) {
                     isLastChunk = (fileInputStream.available() == 0);  // check if is the last chunk
-                    String strIdx = idx + "";
-                    System.out.println(strIdx + ". Sending: " + bytesRead + " bytes");
+//                    String strIdx = idx + "";
+//                    System.out.println(strIdx + ". Sending: " + bytesRead + " bytes");
                     ByteBuffer byteBuffer = ByteBuffer.wrap(buffer, 0, bytesRead);
 
 //                    Future<Void> future = session.getAsyncRemote().sendBinary(byteBuffer, isLastChunk);
