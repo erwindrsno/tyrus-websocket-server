@@ -47,7 +47,7 @@ public class EchoEndpoint {
 //            session.close();
         }
         else{
-            System.out.println("tak ada");
+            System.out.println("File not found");
         }
     }
 
