@@ -18,7 +18,7 @@ public class EchoEndpoint {
     Session session;
     @OnOpen
     public void onOpen(Session session) throws Exception {
-        System.out.println("Threads count currently  : " + Thread.currentThread().getName());
+        System.out.println("Thread : " + Thread.currentThread().getName());
         File file = new File("T06xxyyy.zip");
         final int CHUNK_SIZE = 10240;
         if(file.exists()){
@@ -30,7 +30,7 @@ public class EchoEndpoint {
                 boolean isLastChunk;
 
                 while ((bytesRead = fileInputStream.read(buffer)) != -1) {
-                    isLastChunk = (fileInputStream.available() == 0);  // Check if this is the last chunk
+                    isLastChunk = (fileInputStream.available() == 0);  // check if is the last chunk
                     String strIdx = idx + "";
                     System.out.println(strIdx + ". Sending: " + bytesRead + " bytes");
                     ByteBuffer byteBuffer = ByteBuffer.wrap(buffer, 0, bytesRead);
